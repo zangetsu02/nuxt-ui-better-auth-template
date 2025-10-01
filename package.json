@@ -7,12 +7,20 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "nuxt": "^4.1.2",
-    "vue": "^3.5.22",
-    "vue-router": "^4.5.1"
+    "@iconify-json/lucide": "^1.2.68",
+    "@iconify-json/simple-icons": "^1.2.53",
+    "@nuxt/ui": "^4.0.0",
+    "nuxt": "^4.1.2"
+  },
+    "devDependencies": {
+    "@nuxt/eslint": "^1.9.0",
+    "eslint": "^9.36.0",
+    "typescript": "^5.9.2",
+    "vue-tsc": "^3.1.0"
   },
   "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }
