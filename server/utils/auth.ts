@@ -30,7 +30,6 @@ export const createBetterAuth = () => betterAuth({
   },
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
       const response = await resendInstance.emails.send({
         from: `${runtimeConfig.public.appName} <${runtimeConfig.public.appNotifyEmail}>`,
@@ -40,25 +39,6 @@ export const createBetterAuth = () => betterAuth({
       })
       if (response.error) {
         console.error(`Failed to send reset password email: ${response.error.message}`)
-        throw createError({
-          statusCode: 500,
-          statusMessage: 'Internal Server Error'
-        })
-      }
-    }
-  },
-  emailVerification: {
-    sendOnSignUp: true,
-    autoSignInAfterVerification: true,
-    sendVerificationEmail: async ({ user, url }) => {
-      const response = await resendInstance.emails.send({
-        from: `${runtimeConfig.public.appName} <${runtimeConfig.public.appNotifyEmail}>`,
-        to: user.email,
-        subject: 'Verify your email address',
-        text: `Click the link to verify your email: ${url}`
-      })
-      if (response.error) {
-        console.error(`Failed to send verification email: ${response.error.message}`)
         throw createError({
           statusCode: 500,
           statusMessage: 'Internal Server Error'
@@ -79,7 +59,7 @@ const isAuthSchemaCommand = process.argv.some(arg => arg.includes('server/databa
 if (isAuthSchemaCommand) {
   _auth = createBetterAuth()
 }
-export const auth = _auth!
+// export const auth = _auth!
 
 export const useServerAuth = () => {
   if (runtimeConfig.preset == 'node-server') {
@@ -91,6 +71,7 @@ export const useServerAuth = () => {
     return createBetterAuth()
   }
 }
+export const auth = useServerAuth()
 
 export const getAuthSession = async (event: H3Event) => {
   const headers = event.headers

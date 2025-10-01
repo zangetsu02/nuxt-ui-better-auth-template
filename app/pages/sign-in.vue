@@ -72,30 +72,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
   loading.value = false
 }
-
-async function handleResendEmail() {
-  if (resendLoading.value)
-    return
-  resendLoading.value = true
-  const { error } = await auth.sendVerificationEmail({
-    email: unverifiedEmail,
-    callbackURL: redirectTo.value
-  })
-  if (error) {
-    toast.add({
-      title: error.message,
-      color: 'error'
-    })
-  } else {
-    toast.add({
-      title: 'Verification email has been sent',
-      color: 'success'
-    })
-  }
-
-  isEmailVerifyModalOpen.value = false
-  resendLoading.value = false
-}
 </script>
 
 <template>
@@ -209,42 +185,5 @@ async function handleResendEmail() {
         </UForm>
       </div>
     </UCard>
-
-    <UModal v-model:open="isEmailVerifyModalOpen">
-      <template #content>
-        <UCard>
-          <template #header>
-            <div class="flex items">
-              <h3 class="text-lg font-medium">
-                Email Not Verified
-              </h3>
-            </div>
-          </template>
-
-          <p class="text-sm">
-            Please verify your email address to continue
-          </p>
-
-          <template #footer>
-            <div class="flex justify-end gap-3">
-              <UButton
-                color="neutral"
-                variant="outline"
-                @click="isEmailVerifyModalOpen = false"
-              >
-                Cancel
-              </UButton>
-              <UButton
-                color="primary"
-                :loading="resendLoading"
-                @click="handleResendEmail"
-              >
-                Send Verification Email
-              </UButton>
-            </div>
-          </template>
-        </UCard>
-      </template>
-    </UModal>
   </UContainer>
 </template>

@@ -71,7 +71,6 @@ export function useAuth() {
     signUp: client.signUp,
     forgetPassword: client.forgetPassword,
     resetPassword: client.resetPassword,
-    sendVerificationEmail: client.sendVerificationEmail,
     errorCodes: client.$ERROR_CODES,
     async signOut({ redirectTo }: { redirectTo?: RouteLocationRaw } = {}) {
       await client.signOut({

@@ -8,7 +8,9 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "db:generate": "drizzle-kit generate --config ./server/database/drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config ./server/database/drizzle.config.ts"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.68",

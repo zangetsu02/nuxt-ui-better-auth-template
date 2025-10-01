@@ -66,15 +66,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       title: error.message || error.statusText,
       color: 'error'
     })
-  } else {
-    toast.add({
-      title: 'Verification email has been sent, Please verify your email address to continue.',
-      color: 'success'
-    })
-    state.name = undefined
-    state.email = undefined
-    state.password = undefined
-    state.confirmPassword = undefined
   }
   loading.value = false
 }
