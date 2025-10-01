@@ -1,5 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+import { generateRuntimeConfig } from './server/utils/runtimeConfig'
+
 export default defineNuxtConfig({
+
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui'
@@ -10,6 +14,7 @@ export default defineNuxtConfig({
   },
 
   css: ['~/assets/css/main.css'],
+  runtimeConfig: generateRuntimeConfig(),
 
   routeRules: {
     '/': { prerender: true }
