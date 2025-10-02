@@ -4,6 +4,7 @@ import * as z from 'zod'
 import type { output as ZodOutput } from 'zod'
 
 definePageMeta({
+  layout: 'login',
   auth: {
     only: 'guest'
   }
@@ -77,7 +78,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       <template #header>
         <div class="text-center p-4">
           <h1 class="text-xl font-semibold">
-            Sign up
+            Nuxt 4 - Nuxt UI - Drizzle - Postgre - Better Auth Template
           </h1>
         </div>
       </template>

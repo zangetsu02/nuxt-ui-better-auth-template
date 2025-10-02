@@ -1,13 +1,18 @@
-<template>
-  <div>
-    Index
-  </div>
-</template>
-
-<script lang="ts" setup>
-
+<script setup lang="ts">
+const { user, session } = useAuth()
 </script>
 
-<style>
-
-</style>
+<template>
+  <div>
+    <UPageBody>
+      <h3 class="text-xl font-bold">
+        User
+      </h3>
+      <pre>{{ user }}</pre>
+      <h3 class="text-xl font-bold mt-2">
+        Session
+      </h3>
+      <pre>{{ session }}</pre>
+    </UPageBody>
+  </div>
+</template>

@@ -4,6 +4,7 @@ import * as z from 'zod'
 import type { output as ZodOutput } from 'zod'
 
 definePageMeta({
+  layout: 'login',
   auth: {
     only: 'guest'
   }
@@ -37,9 +38,6 @@ const state = reactive<Partial<Schema>>({
 
 const loading = ref(false)
 const loadingAction = ref('')
-const isEmailVerifyModalOpen = ref(false)
-const resendLoading = ref(false)
-let unverifiedEmail = ''
 
 async function onSocialLogin(action: 'google' | 'github') {
   loading.value = true
@@ -59,12 +57,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     callbackURL: redirectTo.value
   })
   if (error) {
-    if (error.code === auth.errorCodes.EMAIL_NOT_VERIFIED) {
-      unverifiedEmail = event.data.email
-      isEmailVerifyModalOpen.value = true
-      loading.value = false
-      return
-    }
     toast.add({
       title: error.message,
       color: 'error'

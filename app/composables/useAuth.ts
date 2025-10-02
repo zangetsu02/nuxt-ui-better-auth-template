@@ -9,7 +9,6 @@ import { createAuthClient } from 'better-auth/vue'
 export function useAuth() {
   const url = useRequestURL()
   const headers = import.meta.server ? useRequestHeaders() : undefined
-  const runtimeConfig = useRuntimeConfig()
   const client = createAuthClient({
     baseURL: url.origin,
     fetchOptions: {
@@ -44,8 +43,7 @@ export function useAuth() {
       role: null,
       banReason: null,
       banned: null,
-      banExpires: null,
-      stripeCustomerId: null
+      banExpires: null
     }
     user.value = data?.user
       ? Object.assign({}, userDefaults, data.user)
