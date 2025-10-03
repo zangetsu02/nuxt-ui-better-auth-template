@@ -1,5 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-
 import { generateRuntimeConfig } from './server/utils/runtimeConfig'
 
 export default defineNuxtConfig({

@@ -21,7 +21,6 @@ cd nuxt-ui-better-auth-template
 ### 2. Install dependencies
 pnpm i
 
-
 ### 3. Setup environment variables
 cp .env.example .env
 
