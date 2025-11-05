@@ -53,6 +53,67 @@ To apply the migrations to your database, use:
 pnpm db:migrate
 ```
 
+## API Pagination
+
+The template includes a built-in pagination utility (`server/utils/pagination.ts`) for handling paginated API responses with Drizzle ORM.
+
+### Features
+- Type-safe pagination with TypeScript
+- Standardized pagination metadata
+- Easy integration with Drizzle queries
+- Configurable page size with limits
+
+### Example Implementation
+
+```typescript
+// server/api/users.get.ts
+import { db } from '~/server/database/db'
+import { users } from '~/server/database/schema'
+import { 
+  withPagination, 
+  queryWithCount, 
+  createPaginatedResponse,
+  DEFAULT_PAGE,
+  DEFAULT_PAGE_SIZE,
+  MAX_PAGE_SIZE
+} from '~/server/utils/pagination'
+
+export default defineEventHandler(async (event) => {
+  // Get query parameters
+  const query = getQuery(event)
+  const page = Number(query.page) || DEFAULT_PAGE
+  const pageSize = Math.min(Number(query.pageSize) || DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE)
+
+  // Build your Drizzle query
+  let qb = db.select().from(users)
+  
+  // Apply pagination
+  qb = withPagination(qb, page, pageSize)
+  
+  // Execute query with count
+  const [data, total] = await queryWithCount(qb)
+  
+  // Return paginated response
+  return createPaginatedResponse(data, page, pageSize, total)
+})
+```
+
+### Response Format
+
+```json
+{
+  "data": [...],
+  "meta": {
+    "page": 1,
+    "pageSize": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNextPage": true,
+    "hasPreviousPage": false
+  }
+}
+```
+
 ## 🌟 Support
 
 If you find this project helpful, please consider:
