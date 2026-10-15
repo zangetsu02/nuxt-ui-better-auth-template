@@ -1,25 +1,14 @@
 import pg from 'pg'
 import { Resend } from 'resend'
 import { runtimeConfig } from './runtimeConfig'
+import { sharedResource } from './sharedResource'
 
-const createPgPool = () => new pg.Pool({
+export const getPgPool = sharedResource(() => new pg.Pool({
   connectionString: runtimeConfig.databaseUrl,
   max: 90,
   idleTimeoutMillis: 30000
-})
+}))
 
-let pgPool: pg.Pool
-
-// PG Pool
-export const getPgPool = () => {
-  if (runtimeConfig.preset == 'node-server') {
-    if (!pgPool) {
-      pgPool = createPgPool()
-    }
-    return pgPool
-  } else {
-    return createPgPool()
-  }
-}
-
-export const resendInstance = new Resend(runtimeConfig.resendApiKey)
+// Lazy: the Resend constructor throws when the API key is missing, which would break
+// module import during build and `pnpm auth:schema`.
+export const getResend = sharedResource(() => new Resend(runtimeConfig.resendApiKey))

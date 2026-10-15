@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
 import * as z from 'zod'
-import type { output as ZodOutput } from 'zod'
 
 definePageMeta({
   layout: 'login',
@@ -28,7 +27,7 @@ const schema = z.object({
   rememberMe: z.boolean().optional()
 })
 
-type Schema = ZodOutput<typeof schema>
+type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
   email: undefined,
@@ -37,19 +36,11 @@ const state = reactive<Partial<Schema>>({
 })
 
 const loading = ref(false)
-const loadingAction = ref('')
-
-async function onSocialLogin(action: 'google' | 'github') {
-  loading.value = true
-  loadingAction.value = action
-  auth.signIn.social({ provider: action, callbackURL: redirectTo.value })
-}
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   if (loading.value)
     return
   loading.value = true
-  loadingAction.value = 'submit'
   const { error } = await auth.signIn.email({
     email: event.data.email,
     password: event.data.password,
@@ -77,30 +68,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </div>
       </template>
       <div class="space-y-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <UButton
-            color="neutral"
-            variant="outline"
-            icon="i-simple-icons-google"
-            class="justify-center"
-            :loading="loading && loadingAction === 'google'"
-            :disabled="loading"
-            @click="onSocialLogin('google')"
-          >
-            Google
-          </UButton>
-          <UButton
-            color="neutral"
-            variant="outline"
-            icon="i-simple-icons-github"
-            class="justify-center"
-            :loading="loading && loadingAction === 'github'"
-            :disabled="loading"
-            @click="onSocialLogin('github')"
-          >
-            Github
-          </UButton>
-        </div>
+        <AuthSocialButtons
+          :callback-url="redirectTo"
+          :disabled="loading"
+        />
 
         <USeparator label="Or" />
 
@@ -158,7 +129,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             color="primary"
             block
             :disabled="loading"
-            :loading="loading && loadingAction === 'submit'"
+            :loading="loading"
           >
             Sign In
           </UButton>

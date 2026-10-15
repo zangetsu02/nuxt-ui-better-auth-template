@@ -1,7 +1,11 @@
-import type { NitroRuntimeConfig } from 'nitropack/types'
+import type { RuntimeConfig } from 'nuxt/schema'
 import { config } from 'dotenv'
 
-let runtimeConfigInstance: NitroRuntimeConfig
+// Nitro auto-imports useRuntimeConfig; it is absent when this module is loaded from
+// nuxt.config.ts or the better-auth CLI, hence the typeof guard below.
+declare const useRuntimeConfig: (() => RuntimeConfig) | undefined
+
+let runtimeConfigInstance: RuntimeConfig
 
 export const generateRuntimeConfig = () => ({
   preset: process.env.NUXT_NITRO_PRESET,
@@ -28,8 +32,8 @@ if (typeof useRuntimeConfig !== 'undefined') {
   runtimeConfigInstance = useRuntimeConfig()
 } else {
   // for cli: npm run auth:schema
-  config()
-  runtimeConfigInstance = generateRuntimeConfig() as NitroRuntimeConfig
+  config({ quiet: true })
+  runtimeConfigInstance = generateRuntimeConfig() as RuntimeConfig
 }
 
 export const runtimeConfig = runtimeConfigInstance
