@@ -30,8 +30,8 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
-  email: undefined,
-  password: undefined,
+  email: '',
+  password: '',
   rememberMe: false
 })
 

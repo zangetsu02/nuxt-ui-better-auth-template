@@ -22,7 +22,7 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
-  email: undefined
+  email: ''
 })
 
 const loading = ref(false)
