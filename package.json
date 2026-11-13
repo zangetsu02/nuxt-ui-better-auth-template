@@ -15,15 +15,15 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.144",
-    "@iconify-json/simple-icons": "^1.2.100",
-    "@nuxt/ui": "^4.11.3",
-    "better-auth": "^1.7.9",
-    "dotenv": "^18.0.8",
+    "@iconify-json/lucide": "^1.2.153",
+    "@iconify-json/simple-icons": "^1.2.102",
+    "@nuxt/ui": "^4.12.0",
+    "better-auth": "^1.7.20",
+    "dotenv": "^18.0.10",
     "drizzle-orm": "^0.45.4",
-    "nuxt": "^4.6.1",
+    "nuxt": "^4.6.4",
     "pg": "^8.23.1",
-    "resend": "^6.33.0",
+    "resend": "^6.38.0",
     "uuid": "^14.0.3",
     "zod": "^4.6.7"
   },
@@ -31,9 +31,9 @@
     "@nuxt/eslint": "^1.17.0",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^0.31.11",
-    "eslint": "^10.12.0",
+    "eslint": "^10.14.0",
     "typescript": "^5.9.3",
-    "vue-tsc": "^3.3.13"
+    "vue-tsc": "^3.3.14"
   },
   "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }
