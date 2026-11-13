@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: npm # also handles pnpm-lock.yaml
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      # one PR per week for minor/patch; majors stay as separate PRs
+      minor-and-patch:
+        update-types: [minor, patch]
