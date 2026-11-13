@@ -23,7 +23,7 @@ const redirectTo = computed(() => {
 })
 
 const schema = z.object({
-  name: z.string().min(5, 'Name must be at least 5 characters'),
+  name: z.string().min(1, 'Name is required'),
   email: z.email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   confirmPassword: z.string()
@@ -58,8 +58,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       title: error.message || error.statusText,
       color: 'error'
     })
+    loading.value = false
+    return
   }
-  loading.value = false
+  // Sign-up, unlike sign-in, does not redirect on its own.
+  await navigateTo(redirectTo.value)
 }
 </script>
 

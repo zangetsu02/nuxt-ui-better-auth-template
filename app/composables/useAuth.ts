@@ -28,6 +28,8 @@ export type SessionUser = NonNullable<Awaited<ReturnType<AuthClient['getSession'
 // never released. On the server it cannot be shared — it captures request headers.
 let browserClient: AuthClient | undefined
 let sessionListenerAttached = false
+// Browser only: concurrent callers wait on the same request instead of reading stale state.
+let browserSessionFetch: Promise<unknown> | undefined
 
 export function useAuth() {
   const url = useRequestURL()
@@ -37,18 +39,22 @@ export function useAuth() {
 
   const session = useState<InferSessionFromClient<BetterAuthClientOptions> | null>('auth:session', () => null)
   const user = useState<SessionUser | null>('auth:user', () => null)
-  const sessionFetching = import.meta.server ? ref(false) : useState('auth:sessionFetching', () => false)
 
-  const fetchSession = async () => {
-    if (sessionFetching.value) {
-      return
-    }
-    sessionFetching.value = true
+  const loadSession = async () => {
     const { data } = await client.getSession()
     session.value = data?.session || null
     user.value = data?.user ?? null
-    sessionFetching.value = false
     return data
+  }
+
+  const fetchSession = (): ReturnType<typeof loadSession> => {
+    if (import.meta.server) {
+      return loadSession()
+    }
+    browserSessionFetch ??= loadSession().finally(() => {
+      browserSessionFetch = undefined
+    })
+    return browserSessionFetch as ReturnType<typeof loadSession>
   }
 
   if (import.meta.client && !sessionListenerAttached) {

@@ -5,7 +5,6 @@ import { sharedResource } from './sharedResource'
 
 export const getPgPool = sharedResource(() => new pg.Pool({
   connectionString: runtimeConfig.databaseUrl,
-  max: 90,
   idleTimeoutMillis: 30000
 }))
 

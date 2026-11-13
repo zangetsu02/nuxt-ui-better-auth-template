@@ -35,7 +35,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const { loggedIn, fetchSession } = useAuth()
   const redirectOptions = useRuntimeConfig().public.auth
   const { only, redirectUserTo, redirectGuestTo } = defu(to.meta?.auth, redirectOptions)
-  await fetchSession()
+  // In the browser the session listener keeps a signed-in state fresh, so only ask when signed out.
+  if (import.meta.server || !loggedIn.value) {
+    await fetchSession()
+  }
 
   if (only === 'guest') {
     if (loggedIn.value) {
@@ -57,6 +60,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
     if (to.path === redirectGuestTo) {
       return
     }
-    return navigateTo(`${redirectGuestTo}?redirect=${to.fullPath}`)
+    return navigateTo({ path: redirectGuestTo, query: { redirect: to.fullPath } })
   }
 })

@@ -1,5 +1,4 @@
 import type { PgSelect } from 'drizzle-orm/pg-core'
-import { count } from 'drizzle-orm'
 
 /**
  * Default pagination values
@@ -41,36 +40,6 @@ export function withPagination<T extends PgSelect>(
   pageSize: number
 ): T {
   return qb.limit(pageSize).offset((page - 1) * pageSize) as T
-}
-
-/**
- * Execute a query, then count how many rows it would return without pagination.
- *
- * `$dynamic()` hands back the same builder rather than a copy, so this rewrites
- * the query that was just run — `qb` must not be reused afterwards. Limit and
- * offset have to be cleared too: left in place, the count query selects zero
- * rows on every page after the first.
- *
- * @param qb - The query builder to execute
- * @returns Tuple of [results, total count]
- */
-export async function queryWithCount<T extends PgSelect>(
-  qb: T
-): Promise<[Awaited<T>, number]> {
-  const result = await qb
-
-  const countQb = qb.$dynamic()
-  // @ts-expect-error - Accessing internal Drizzle config
-  countQb.config.fields = { count: count() }
-  // @ts-expect-error - Accessing internal Drizzle config
-  countQb.config.orderBy = []
-  // @ts-expect-error - Accessing internal Drizzle config
-  countQb.config.limit = undefined
-  // @ts-expect-error - Accessing internal Drizzle config
-  countQb.config.offset = undefined
-
-  const [totalResult] = await countQb
-  return [result, Number(totalResult?.count ?? 0)]
 }
 
 /**
