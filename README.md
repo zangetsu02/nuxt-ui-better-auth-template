@@ -58,7 +58,6 @@ Then open http://localhost:3000 — you will be redirected to `/sign-in`. Create
 
 | Variable | Purpose |
 | --- | --- |
-| `NUXT_NITRO_PRESET` | Set to `node-server` to reuse a single DB pool / auth instance across requests. Any other value creates them per request (serverless). |
 | `NUXT_BETTER_AUTH_SECRET` | Session signing secret. **Generate a real one** with `npx auth secret` — Better Auth warns on short or low-entropy values. |
 | `NUXT_RESEND_API_KEY` | Resend API key, used for the password-reset email. |
 | `NUXT_DATABASE_URL` | PostgreSQL connection string. |
@@ -94,7 +93,7 @@ pnpm db:migrate    # apply the new migration
 
 `pnpm auth:schema` runs the Better Auth CLI (`npx auth@latest generate`). The old `@better-auth/cli` package is deprecated and no longer receives updates.
 
-Get a typed Drizzle client with `useDB()`. On a `node-server` preset one client is built and reused; on serverless presets a fresh one is built per invocation:
+Get a typed Drizzle client with `useDB()`. One client (and one connection pool) is built on first use and reused:
 
 ```typescript
 const rows = await useDB().select().from(user)
@@ -153,8 +152,11 @@ export default defineEventHandler(async (event) => {
   // validates ?page= and ?pageSize=, applies defaults, rejects out-of-range values
   const { page, pageSize } = await getPaginationQuery(event)
 
-  const qb = withPagination(useDB().select().from(user).$dynamic(), page, pageSize)
-  const [data, total] = await queryWithCount(qb)
+  const db = useDB()
+  const [data, total] = await Promise.all([
+    withPagination(db.select().from(user).$dynamic(), page, pageSize),
+    db.$count(user)
+  ])
 
   return createPaginatedResponse(data, page, pageSize, total)
 })

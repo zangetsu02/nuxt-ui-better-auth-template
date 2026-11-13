@@ -8,7 +8,6 @@ declare const useRuntimeConfig: (() => RuntimeConfig) | undefined
 let runtimeConfigInstance: RuntimeConfig
 
 export const generateRuntimeConfig = () => ({
-  preset: process.env.NUXT_NITRO_PRESET,
   betterAuthSecret: process.env.NUXT_BETTER_AUTH_SECRET,
   // Resend
   resendApiKey: process.env.NUXT_RESEND_API_KEY,
