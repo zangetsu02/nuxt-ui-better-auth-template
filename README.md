@@ -50,7 +50,7 @@ pnpm db:migrate
 pnpm dev
 ```
 
-Then open http://localhost:3000 — you will be redirected to `/sign-in`. Create an account from `/sign-up` and you are in.
+Then open http://localhost:3000 — you will be redirected to `/sign-in`. Create an account from `/sign-up`, then open the verification link sent to your inbox (a valid `NUXT_RESEND_API_KEY` is required) and you are in.
 
 ## ⚙️ Environment variables
 
@@ -125,6 +125,8 @@ A global middleware (`app/middleware/auth.global.ts`) protects every page by def
 definePageMeta({ auth: false })             // public page
 definePageMeta({ auth: { only: 'guest' } }) // only for signed-out visitors
 ```
+
+**Email verification is required.** Sign-up sends a verification link through Resend; the link signs the user in. Signing in with an unverified address fails with `EMAIL_NOT_VERIFIED` and sends a fresh link. Users created before this was enabled have `email_verified = false` and must verify too (or flip the column by hand).
 
 Pages included: `/sign-in`, `/sign-up`, `/forgot-password` and `/reset-password`. The reset flow is wired end to end — `/forgot-password` calls `requestPasswordReset`, Better Auth emails the link through Resend, and the link lands on `/reset-password` with a one-time token.
 
