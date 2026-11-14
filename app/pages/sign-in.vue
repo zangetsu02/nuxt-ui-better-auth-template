@@ -50,6 +50,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   if (error) {
     toast.add({
       title: error.message,
+      description: error.code === 'EMAIL_NOT_VERIFIED' ? 'We sent you a new verification link.' : undefined,
       color: 'error'
     })
   }

@@ -61,8 +61,13 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     loading.value = false
     return
   }
-  // Sign-up, unlike sign-in, does not redirect on its own.
-  await navigateTo(redirectTo.value)
+  // No session yet: the account must be verified first. The emailed link signs the user in and lands on redirectTo.
+  toast.add({
+    title: 'Check your inbox',
+    description: `We sent a verification link to ${event.data.email}.`,
+    color: 'success'
+  })
+  await navigateTo({ path: '/sign-in', query: route.query })
 }
 </script>
 

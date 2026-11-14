@@ -10,6 +10,22 @@ import { getResend } from './drivers'
 import { runtimeConfig } from './runtimeConfig'
 import { sharedResource } from './sharedResource'
 
+const sendEmail = async (to: string, subject: string, text: string) => {
+  const response = await getResend().emails.send({
+    from: `${runtimeConfig.public.appName} <${runtimeConfig.public.appNotifyEmail}>`,
+    to,
+    subject,
+    text
+  })
+  if (response.error) {
+    console.error(`Failed to send "${subject}" email: ${response.error.message}`)
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Internal Server Error'
+    })
+  }
+}
+
 export const createBetterAuth = () => betterAuth({
   baseURL: runtimeConfig.public.baseURL,
   trustedOrigins: [runtimeConfig.public.baseURL],
@@ -30,21 +46,15 @@ export const createBetterAuth = () => betterAuth({
   },
   emailAndPassword: {
     enabled: true,
-    sendResetPassword: async ({ user, url }) => {
-      const response = await getResend().emails.send({
-        from: `${runtimeConfig.public.appName} <${runtimeConfig.public.appNotifyEmail}>`,
-        to: user.email,
-        subject: 'Reset your password',
-        text: `Click the link to reset your password: ${url}`
-      })
-      if (response.error) {
-        console.error(`Failed to send reset password email: ${response.error.message}`)
-        throw createError({
-          statusCode: 500,
-          statusMessage: 'Internal Server Error'
-        })
-      }
-    }
+    requireEmailVerification: true,
+    sendResetPassword: ({ user, url }) => sendEmail(user.email, 'Reset your password', `Click the link to reset your password: ${url}`)
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    // Unverified users get a fresh link when they try to sign in.
+    sendOnSignIn: true,
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: ({ user, url }) => sendEmail(user.email, 'Verify your email address', `Click the link to verify your email: ${url}`)
   },
   plugins: [
     ...(runtimeConfig.public.appEnv === 'development' ? [openAPI()] : []),
