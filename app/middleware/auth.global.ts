@@ -32,6 +32,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (to.meta?.auth === false) {
     return
   }
+  if (to.matched.length === 0) {
+    return
+  }
   const { loggedIn, fetchSession } = useAuth()
   const redirectOptions = useRuntimeConfig().public.auth
   const { only, redirectUserTo, redirectGuestTo } = defu(to.meta?.auth, redirectOptions)
